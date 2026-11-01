@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.hypothesis/
+.coverage
+htmlcov/
+
+# Data, runs, checkpoints
+/data/
+/outputs/
+/multirun/
+mlruns/
+mlartifacts/
+mlflow.db
+checkpoints/
+*.pt
+*.pth
+
+# LaTeX build files
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.synctex.gz
+paper/*.fdb_latexmk
+paper/*.fls
+paper/main.pdf
+
+# Env and OS
+.env
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
