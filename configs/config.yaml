@@ -1,0 +1,16 @@
+# Base config shared by every experiment. Experiment-specific files override these.
+seed: 0
+device: auto
+deterministic: false
+
+paths:
+  data: ${oc.env:SPECTRALENS_DATA,data}
+  checkpoints: checkpoints
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment: spectralens
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
