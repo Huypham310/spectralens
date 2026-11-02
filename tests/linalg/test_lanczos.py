@@ -76,6 +76,29 @@ def test_matches_scipy_eigsh_on_sparse_laplacian():
     np.testing.assert_allclose(ours.eigenvalues.numpy(), np.sort(ref)[::-1], rtol=1e-8)
 
 
+def test_identity_breaks_down_after_one_step():
+    res = lanczos(torch.eye(6, dtype=torch.float64), num_steps=5, generator=_gen())
+    assert res.steps == 1
+    assert torch.isfinite(res.basis).all()
+    torch.testing.assert_close(res.alpha, torch.ones(1, dtype=torch.float64))
+
+
+def test_low_rank_stops_at_krylov_dimension():
+    # rank 3 plus a zero eigenvalue: the Krylov space of a random start is 4-dimensional
+    eigs = torch.cat([torch.tensor([3.0, 2.0, 1.0]), torch.zeros(17)]).double()
+    a = sym_with_spectrum(eigs, seed=5)
+    res = lanczos(a, num_steps=10, generator=_gen())
+    assert res.steps == 4
+    got = torch.sort(torch.linalg.eigvalsh(res.tridiagonal()), descending=True).values
+    torch.testing.assert_close(got, torch.tensor([3.0, 2.0, 1.0, 0.0]).double(), atol=1e-10, rtol=0)
+
+
+def test_eigsh_returns_fewer_pairs_after_breakdown():
+    res = lanczos_eigsh(2 * torch.eye(5, dtype=torch.float64), k=3, num_steps=5)
+    torch.testing.assert_close(res.eigenvalues, torch.tensor([2.0], dtype=torch.float64))
+    assert res.converged == [True]
+
+
 def test_bad_arguments():
     with pytest.raises(ValueError):
         lanczos(torch.ones(3, 2), num_steps=2)
@@ -83,3 +106,5 @@ def test_bad_arguments():
         lanczos(torch.eye(3), num_steps=4)
     with pytest.raises(ValueError):
         lanczos_eigsh(torch.eye(5), k=6, num_steps=5)
+    with pytest.raises(ValueError):
+        lanczos_eigsh(torch.eye(5), k=1, which="XX")  # type: ignore[arg-type]

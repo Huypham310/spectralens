@@ -52,6 +52,9 @@ def lanczos(
     ("ghosts") appear in T. ``reorth=True`` fixes this with full reorthogonalization against
     every previous vector, done twice (classical Gram-Schmidt, "twice is enough").
     That costs O(n m) memory and O(n m^2) time on top of the m matvecs.
+
+    If the Krylov space becomes invariant before ``num_steps`` (breakdown), the run stops
+    early and the result has fewer steps.
     """
     op = aslinearoperator(a)
     n = op.shape[0]
@@ -71,6 +74,13 @@ def lanczos(
     alpha = torch.zeros(num_steps, dtype=op.dtype, device=op.device)
     beta = torch.zeros(max(num_steps - 1, 0), dtype=op.dtype, device=op.device)
 
+    # Breakdown threshold. Ritz value errors scale like beta^2 / gap, so stopping once
+    # beta < sqrt(eps) * ||A|| still leaves eigenvalues accurate to about eps * ||A||^2 / gap.
+    # a pure eps-based test is too strict: an "exactly" rank-deficient matrix built in
+    # floating point has null-space eigenvalues ~1e-16, and beta only drops to ~1e-13
+    tol = torch.finfo(op.dtype).eps ** 0.5
+    anorm = 0.0  # running estimate of ||A||_2 from the entries of T
+    steps = num_steps
     q_prev = torch.zeros_like(q)
     b_prev = torch.zeros((), dtype=op.dtype, device=op.device)
     for j in range(num_steps):
@@ -85,11 +95,17 @@ def lanczos(
         if j == num_steps - 1:
             break
         b = torch.linalg.vector_norm(w)
+        anorm = max(anorm, abs(alpha[j].item()) + b.item() + b_prev.item())
+        if b.item() <= tol * anorm:
+            # breakdown: the Krylov space is invariant (e.g. A = I, or rank(A) < m), so T
+            # already holds exact eigenvalues. dividing by b would fill Q with NaN/noise
+            steps = j + 1
+            break
         beta[j] = b
         q_prev, q = q, w / b
         b_prev = b
 
-    return LanczosResult(alpha=alpha, beta=beta, basis=basis)
+    return LanczosResult(alpha=alpha[:steps], beta=beta[: steps - 1], basis=basis[:, :steps])
 
 
 def lanczos_eigsh(
@@ -104,6 +120,9 @@ def lanczos_eigsh(
     ``which`` is "LA" (largest algebraic), "SA" (smallest algebraic) or "LM" (largest
     magnitude), same names as ``scipy.sparse.linalg.eigsh``. Extreme eigenvalues converge
     first, so ``num_steps`` a few times ``k`` is usually enough when the spectrum has gaps.
+
+    After an early breakdown fewer than ``k`` pairs may come back: a single start vector only
+    sees as many distinct eigenvalues as the Krylov space it spans.
     """
     op = aslinearoperator(a)
     n = op.shape[0]
@@ -123,15 +142,15 @@ def lanczos_eigsh(
         order = torch.argsort(theta.abs(), descending=True)
     else:
         raise ValueError(f"unknown which={which!r}")
-    idx = order[:k]
+    idx = order[: min(k, res.steps)]
 
-    vecs = res.basis[:, : res.steps] @ s[:, idx]
+    vecs = res.basis @ s[:, idx]
     # residual norm of a Ritz pair is |beta_m * s_{m,i}|; ta không có beta_m nên check trực tiếp
     resid = torch.linalg.vector_norm(op.matmat(vecs) - vecs * theta[idx], dim=0)
     scale = theta[idx].abs().clamp_min(1.0)
     return EigResult(
         eigenvalues=theta[idx],
         eigenvectors=vecs,
-        iterations=[res.steps] * k,
+        iterations=[res.steps] * idx.numel(),
         converged=(resid <= 1e-6 * scale).tolist(),
     )
