@@ -56,6 +56,28 @@ optimal), on a spectrum sigma_i = 1/i. Eigenvalue error is the largest absolute 
 top 10. Two power iterations bring the randomized SVD within 2% of optimal while staying
 about 650x faster than the full decomposition.
 
+## Data
+
+`spectralens.data` builds leakage-free splits for the two datasets used in the experiments:
+
+| Dataset | Train | Val | Test | Split |
+|---|---:|---:|---:|---|
+| EuroSAT RGB (64x64, 10 classes) | 21,600 | 2,700 | 2,700 | stratified 80 / 10 / 10, seeded |
+| CIFAR-10 (32x32, 10 classes) | 45,000 | 5,000 | 10,000 | official test set, train split 90 / 10 |
+
+- Normalization statistics are computed on the train split only (float64 accumulation) and
+  cached per seed. On CIFAR-10 they come out as mean (0.4914, 0.4822, 0.4466) and std
+  (0.2470, 0.2435, 0.2616), matching the commonly quoted values.
+- Augmentation only touches the train view: flips and 90-degree rotations for EuroSAT (overhead
+  imagery has no "up"), random crop + flip for CIFAR-10.
+- Decoded images are kept in RAM as one uint8 tensor and cached on disk. On EuroSAT that took
+  the single-worker loader from ~1,000 to ~4,000 images/s and split building from 27 s to 0.2 s.
+- `fixed_subset` gives a small, class-balanced, always-identical subset for Hessian estimates.
+
+```bash
+python -m spectralens data eurosat --download   # or: cifar10
+```
+
 ## Planned layout
 
 ```
