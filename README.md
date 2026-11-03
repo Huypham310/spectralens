@@ -23,6 +23,39 @@ against `torch.linalg` / SciPy before it is used on real models.
    truncated SVD (linear) or Tucker (conv) factorizations, and does the spectrum predict which
    layers are safe to compress?
 
+## Linear algebra toolkit
+
+`spectralens.linalg` works on dense tensors or on any matrix-free `LinearOperator`
+(a function `v -> A @ v`), so the same code runs on a weight matrix or a network Hessian.
+
+| Routine | What it does |
+|---|---|
+| `power_iteration` | top-k eigenpairs by magnitude, with implicit deflation |
+| `lanczos`, `lanczos_eigsh` | Krylov tridiagonalization with full reorthogonalization and breakdown detection; extreme Ritz pairs (`LA` / `SA` / `LM`) |
+| `randomized_svd` | Halko-Martinsson-Tropp range finder with oversampling and power iterations |
+| `hutchinson`, `hutchpp` | stochastic trace estimation (Rademacher / Gaussian probes), Hutch++ |
+| `hessian_operator` | Hessian-vector products by double backprop, never forming the Hessian |
+
+Every routine is tested against `torch.linalg` or SciPy (including `scipy.sparse.linalg.eigsh`
+on a sparse Laplacian), and the randomized SVD error is checked against the HMT 2011 bound
+with Hypothesis-generated matrices.
+
+Benchmark on a 4096 x 4096 float32 matrix, RTX 5070 Ti Laptop GPU
+(`python scripts/bench_linalg.py --device cuda`):
+
+| Method | Time (ms) | Error |
+|---|---:|---:|
+| full SVD (`torch.linalg.svd`) | 5633.6 | 1 |
+| randomized SVD, rank 64, q=0 | 5.5 | 2.67 |
+| randomized SVD, rank 64, q=2 | 8.6 | 1.02 |
+| dense `torch.linalg.eigvalsh` | 248.0 | 4.8e-6 |
+| Lanczos top-10, 60 steps | 28.4 | 3.8e-6 |
+
+SVD error is the spectral-norm residual divided by the optimal one, sigma_65 (1.0 means
+optimal), on a spectrum sigma_i = 1/i. Eigenvalue error is the largest absolute error of the
+top 10. Two power iterations bring the randomized SVD within 2% of optimal while staying
+about 650x faster than the full decomposition.
+
 ## Planned layout
 
 ```
