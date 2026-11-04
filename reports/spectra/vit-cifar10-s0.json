@@ -1,0 +1,533 @@
+{
+  "run": "vit-cifar10-s0",
+  "epochs": [
+    {
+      "epoch": 0,
+      "val_accuracy": 0.0824,
+      "layers": 38,
+      "stable_rank": 53.29120352808693,
+      "stable_rank_ratio": 0.3052662237631796,
+      "effective_rank_ratio": 0.8517560013553552,
+      "outlier_fraction": 0.00041118421052631577,
+      "alpha_median": 6.461524486541748
+    },
+    {
+      "epoch": 1,
+      "val_accuracy": 0.3488,
+      "layers": 38,
+      "stable_rank": 52.890420052699234,
+      "stable_rank_ratio": 0.2953088857659197,
+      "effective_rank_ratio": 0.850340221220987,
+      "outlier_fraction": 0.006222587719298246,
+      "alpha_median": 6.416775703430176
+    },
+    {
+      "epoch": 2,
+      "val_accuracy": 0.4534,
+      "layers": 38,
+      "stable_rank": 50.25864741836713,
+      "stable_rank_ratio": 0.27787106401496525,
+      "effective_rank_ratio": 0.8490886767705282,
+      "outlier_fraction": 0.011842105263157895,
+      "alpha_median": 6.168828964233398
+    },
+    {
+      "epoch": 5,
+      "val_accuracy": 0.5618,
+      "layers": 38,
+      "stable_rank": 41.67366580601683,
+      "stable_rank_ratio": 0.22934658615469716,
+      "effective_rank_ratio": 0.8438244330255609,
+      "outlier_fraction": 0.021573464912280703,
+      "alpha_median": 5.385756969451904
+    },
+    {
+      "epoch": 10,
+      "val_accuracy": 0.6402,
+      "layers": 38,
+      "stable_rank": 31.023852312932824,
+      "stable_rank_ratio": 0.17361360797755107,
+      "effective_rank_ratio": 0.8325415807857848,
+      "outlier_fraction": 0.03569078947368421,
+      "alpha_median": 4.384266376495361
+    },
+    {
+      "epoch": 20,
+      "val_accuracy": 0.743,
+      "layers": 38,
+      "stable_rank": 23.009324922698653,
+      "stable_rank_ratio": 0.13221412242690414,
+      "effective_rank_ratio": 0.8152289135414258,
+      "outlier_fraction": 0.04635416666666667,
+      "alpha_median": 3.253981113433838
+    },
+    {
+      "epoch": 30,
+      "val_accuracy": 0.7794,
+      "layers": 38,
+      "stable_rank": 22.455892714642317,
+      "stable_rank_ratio": 0.1297131516915928,
+      "effective_rank_ratio": 0.8130488897624769,
+      "outlier_fraction": 0.047724780701754385,
+      "alpha_median": 3.1237597465515137
+    }
+  ],
+  "final_layers": [
+    {
+      "name": "patch_embed.weight",
+      "shape": [
+        48,
+        192
+      ],
+      "spectral_norm": 2.759664195126239,
+      "stable_rank": 9.659615536892538,
+      "effective_rank": 39.72785568237305,
+      "outlier_fraction": 0.14583333333333334,
+      "alpha": 4.5150518295966355
+    },
+    {
+      "name": "blocks.0.attn.in_proj_weight.q",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.326358473402072,
+      "stable_rank": 18.668702853319285,
+      "effective_rank": 148.4416046142578,
+      "outlier_fraction": 0.03125,
+      "alpha": 2.9466079870310504
+    },
+    {
+      "name": "blocks.0.attn.in_proj_weight.k",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.5044555419428314,
+      "stable_rank": 15.537860253848478,
+      "effective_rank": 146.8782501220703,
+      "outlier_fraction": 0.041666666666666664,
+      "alpha": 2.671461956571437
+    },
+    {
+      "name": "blocks.0.attn.in_proj_weight.v",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.3006883384661267,
+      "stable_rank": 20.031539212188466,
+      "effective_rank": 146.4337615966797,
+      "outlier_fraction": 0.041666666666666664,
+      "alpha": 2.6183184600514076
+    },
+    {
+      "name": "blocks.0.attn.out_proj.weight",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.1561568512287044,
+      "stable_rank": 20.58773142641677,
+      "effective_rank": 138.12054443359375,
+      "outlier_fraction": 0.07291666666666667,
+      "alpha": 2.498367534222071
+    },
+    {
+      "name": "blocks.0.mlp.0.weight",
+      "shape": [
+        192,
+        384
+      ],
+      "spectral_norm": 2.3879128068751885,
+      "stable_rank": 14.735198388790437,
+      "effective_rank": 154.5216522216797,
+      "outlier_fraction": 0.10416666666666667,
+      "alpha": 2.988582882067563
+    },
+    {
+      "name": "blocks.0.mlp.2.weight",
+      "shape": [
+        192,
+        384
+      ],
+      "spectral_norm": 2.123841582948776,
+      "stable_rank": 12.919033079822666,
+      "effective_rank": 155.52645874023438,
+      "outlier_fraction": 0.08333333333333333,
+      "alpha": 2.6197315013834395
+    },
+    {
+      "name": "blocks.1.attn.in_proj_weight.q",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.2141231399635328,
+      "stable_rank": 22.608855803539353,
+      "effective_rank": 149.42625427246094,
+      "outlier_fraction": 0.036458333333333336,
+      "alpha": 3.1582720931062838
+    },
+    {
+      "name": "blocks.1.attn.in_proj_weight.k",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.4332140946443974,
+      "stable_rank": 17.3595211058538,
+      "effective_rank": 147.7129364013672,
+      "outlier_fraction": 0.041666666666666664,
+      "alpha": 2.870856224579132
+    },
+    {
+      "name": "blocks.1.attn.in_proj_weight.v",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.2872358955399714,
+      "stable_rank": 23.733368337638037,
+      "effective_rank": 145.74989318847656,
+      "outlier_fraction": 0.052083333333333336,
+      "alpha": 2.7587106663204795
+    },
+    {
+      "name": "blocks.1.attn.out_proj.weight",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.1211088386714267,
+      "stable_rank": 24.695539984068194,
+      "effective_rank": 142.0596923828125,
+      "outlier_fraction": 0.06770833333333333,
+      "alpha": 2.8852370314895244
+    },
+    {
+      "name": "blocks.1.mlp.0.weight",
+      "shape": [
+        192,
+        384
+      ],
+      "spectral_norm": 1.6871387608246036,
+      "stable_rank": 19.938463622971845,
+      "effective_rank": 167.92813110351562,
+      "outlier_fraction": 0.07291666666666667,
+      "alpha": 2.9615684881334547
+    },
+    {
+      "name": "blocks.1.mlp.2.weight",
+      "shape": [
+        192,
+        384
+      ],
+      "spectral_norm": 1.3583429713428654,
+      "stable_rank": 17.880741271618703,
+      "effective_rank": 166.56117248535156,
+      "outlier_fraction": 0.06770833333333333,
+      "alpha": 2.8681948109499555
+    },
+    {
+      "name": "blocks.2.attn.in_proj_weight.q",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.1446665729906085,
+      "stable_rank": 24.171527431757646,
+      "effective_rank": 151.2296905517578,
+      "outlier_fraction": 0.026041666666666668,
+      "alpha": 3.722447951012543
+    },
+    {
+      "name": "blocks.2.attn.in_proj_weight.k",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.272251816992499,
+      "stable_rank": 20.207242178251327,
+      "effective_rank": 149.94100952148438,
+      "outlier_fraction": 0.03125,
+      "alpha": 3.4263747005646303
+    },
+    {
+      "name": "blocks.2.attn.in_proj_weight.v",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.1799026156680688,
+      "stable_rank": 25.74051901796106,
+      "effective_rank": 147.54827880859375,
+      "outlier_fraction": 0.046875,
+      "alpha": 3.123759644960593
+    },
+    {
+      "name": "blocks.2.attn.out_proj.weight",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.081798304146011,
+      "stable_rank": 23.595701985293026,
+      "effective_rank": 145.41717529296875,
+      "outlier_fraction": 0.057291666666666664,
+      "alpha": 2.6074654010150873
+    },
+    {
+      "name": "blocks.2.mlp.0.weight",
+      "shape": [
+        192,
+        384
+      ],
+      "spectral_norm": 1.1669964433795934,
+      "stable_rank": 34.641672458874154,
+      "effective_rank": 173.03895568847656,
+      "outlier_fraction": 0.057291666666666664,
+      "alpha": 3.635779180295088
+    },
+    {
+      "name": "blocks.2.mlp.2.weight",
+      "shape": [
+        192,
+        384
+      ],
+      "spectral_norm": 0.8948003556676059,
+      "stable_rank": 32.33607457959324,
+      "effective_rank": 171.33177185058594,
+      "outlier_fraction": 0.057291666666666664,
+      "alpha": 3.4098917797904202
+    },
+    {
+      "name": "blocks.3.attn.in_proj_weight.q",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.2241408794308488,
+      "stable_rank": 20.56518337687064,
+      "effective_rank": 151.6595001220703,
+      "outlier_fraction": 0.020833333333333332,
+      "alpha": 4.057212602857663
+    },
+    {
+      "name": "blocks.3.attn.in_proj_weight.k",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.2929473277668295,
+      "stable_rank": 19.134843061735438,
+      "effective_rank": 151.01882934570312,
+      "outlier_fraction": 0.020833333333333332,
+      "alpha": 3.5265447584040843
+    },
+    {
+      "name": "blocks.3.attn.in_proj_weight.v",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.2889406231537632,
+      "stable_rank": 20.87527310868139,
+      "effective_rank": 148.20645141601562,
+      "outlier_fraction": 0.041666666666666664,
+      "alpha": 3.0839256579752954
+    },
+    {
+      "name": "blocks.3.attn.out_proj.weight",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.0981165896160168,
+      "stable_rank": 20.68617531651718,
+      "effective_rank": 146.78639221191406,
+      "outlier_fraction": 0.052083333333333336,
+      "alpha": 2.661957546125375
+    },
+    {
+      "name": "blocks.3.mlp.0.weight",
+      "shape": [
+        192,
+        384
+      ],
+      "spectral_norm": 1.0779781333144316,
+      "stable_rank": 37.256867931225344,
+      "effective_rank": 174.3115692138672,
+      "outlier_fraction": 0.041666666666666664,
+      "alpha": 4.1444696271823345
+    },
+    {
+      "name": "blocks.3.mlp.2.weight",
+      "shape": [
+        192,
+        384
+      ],
+      "spectral_norm": 0.845425988117392,
+      "stable_rank": 32.14786953334161,
+      "effective_rank": 172.89907836914062,
+      "outlier_fraction": 0.046875,
+      "alpha": 3.146349391889398
+    },
+    {
+      "name": "blocks.4.attn.in_proj_weight.q",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.2630199810601128,
+      "stable_rank": 18.980202772976334,
+      "effective_rank": 152.2170867919922,
+      "outlier_fraction": 0.020833333333333332,
+      "alpha": 3.9880326226617293
+    },
+    {
+      "name": "blocks.4.attn.in_proj_weight.k",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.2687486866030833,
+      "stable_rank": 19.358300507953977,
+      "effective_rank": 151.1787872314453,
+      "outlier_fraction": 0.020833333333333332,
+      "alpha": 3.750771312344877
+    },
+    {
+      "name": "blocks.4.attn.in_proj_weight.v",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.1748579233537448,
+      "stable_rank": 23.86449062816305,
+      "effective_rank": 149.323486328125,
+      "outlier_fraction": 0.041666666666666664,
+      "alpha": 3.069771506018907
+    },
+    {
+      "name": "blocks.4.attn.out_proj.weight",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.094193273148594,
+      "stable_rank": 19.169483800180807,
+      "effective_rank": 147.90188598632812,
+      "outlier_fraction": 0.041666666666666664,
+      "alpha": 2.8673148167484594
+    },
+    {
+      "name": "blocks.4.mlp.0.weight",
+      "shape": [
+        192,
+        384
+      ],
+      "spectral_norm": 1.013274280393881,
+      "stable_rank": 39.71668091220225,
+      "effective_rank": 175.08753967285156,
+      "outlier_fraction": 0.03125,
+      "alpha": 4.415170319979685
+    },
+    {
+      "name": "blocks.4.mlp.2.weight",
+      "shape": [
+        192,
+        384
+      ],
+      "spectral_norm": 0.8066299007656419,
+      "stable_rank": 32.302761590683296,
+      "effective_rank": 173.43580627441406,
+      "outlier_fraction": 0.041666666666666664,
+      "alpha": 3.3660672499264783
+    },
+    {
+      "name": "blocks.5.attn.in_proj_weight.q",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.176462936887759,
+      "stable_rank": 21.934240291464913,
+      "effective_rank": 151.79812622070312,
+      "outlier_fraction": 0.020833333333333332,
+      "alpha": 4.0420624511551315
+    },
+    {
+      "name": "blocks.5.attn.in_proj_weight.k",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.1641231859112662,
+      "stable_rank": 22.824219952333582,
+      "effective_rank": 150.7478790283203,
+      "outlier_fraction": 0.026041666666666668,
+      "alpha": 3.693256813892383
+    },
+    {
+      "name": "blocks.5.attn.in_proj_weight.v",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.1390480297275376,
+      "stable_rank": 23.95075483863619,
+      "effective_rank": 149.7431640625,
+      "outlier_fraction": 0.03125,
+      "alpha": 3.655095342440515
+    },
+    {
+      "name": "blocks.5.attn.out_proj.weight",
+      "shape": [
+        192,
+        192
+      ],
+      "spectral_norm": 1.0241891306854853,
+      "stable_rank": 20.368438892067754,
+      "effective_rank": 149.71539306640625,
+      "outlier_fraction": 0.036458333333333336,
+      "alpha": 3.092405720369541
+    },
+    {
+      "name": "blocks.5.mlp.0.weight",
+      "shape": [
+        192,
+        384
+      ],
+      "spectral_norm": 0.9858763214455598,
+      "stable_rank": 38.48849412282385,
+      "effective_rank": 176.605712890625,
+      "outlier_fraction": 0.015625,
+      "alpha": 5.089040262095747
+    },
+    {
+      "name": "blocks.5.mlp.2.weight",
+      "shape": [
+        192,
+        384
+      ],
+      "spectral_norm": 1.006868995000742,
+      "stable_rank": 19.12961393629233,
+      "effective_rank": 175.25994873046875,
+      "outlier_fraction": 0.026041666666666668,
+      "alpha": 4.175812624839347
+    },
+    {
+      "name": "head.weight",
+      "shape": [
+        10,
+        192
+      ],
+      "spectral_norm": 2.0722585595068606,
+      "stable_rank": 3.521120053559091,
+      "effective_rank": 9.235906600952148,
+      "outlier_fraction": 0.1,
+      "alpha": 2.652041051854707
+    }
+  ]
+}

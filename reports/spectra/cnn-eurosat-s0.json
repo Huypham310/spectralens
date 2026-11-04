@@ -1,0 +1,161 @@
+{
+  "run": "cnn-eurosat-s0",
+  "epochs": [
+    {
+      "epoch": 0,
+      "val_accuracy": 0.1111111111111111,
+      "layers": 7,
+      "stable_rank": 33.530015290171775,
+      "stable_rank_ratio": 0.5299006670538609,
+      "effective_rank_ratio": 0.96441477568692,
+      "outlier_fraction": 0.0,
+      "alpha_median": 9.326435089111328
+    },
+    {
+      "epoch": 1,
+      "val_accuracy": 0.5481481481481482,
+      "layers": 7,
+      "stable_rank": 11.074871069305194,
+      "stable_rank_ratio": 0.1817708626796793,
+      "effective_rank_ratio": 0.9126123372209135,
+      "outlier_fraction": 0.08207671957671958,
+      "alpha_median": 2.5889668464660645
+    },
+    {
+      "epoch": 2,
+      "val_accuracy": 0.7718518518518519,
+      "layers": 7,
+      "stable_rank": 9.901819362386446,
+      "stable_rank_ratio": 0.17843948409969254,
+      "effective_rank_ratio": 0.8889273289019469,
+      "outlier_fraction": 0.1150462962962963,
+      "alpha_median": 2.392481803894043
+    },
+    {
+      "epoch": 5,
+      "val_accuracy": 0.837037037037037,
+      "layers": 7,
+      "stable_rank": 8.527426323970406,
+      "stable_rank_ratio": 0.17823721123446784,
+      "effective_rank_ratio": 0.8623907311252816,
+      "outlier_fraction": 0.1295552248677249,
+      "alpha_median": 2.554574966430664
+    },
+    {
+      "epoch": 10,
+      "val_accuracy": 0.9296296296296296,
+      "layers": 7,
+      "stable_rank": 8.274396070727493,
+      "stable_rank_ratio": 0.1854020223066735,
+      "effective_rank_ratio": 0.8345278890044601,
+      "outlier_fraction": 0.1373677248677249,
+      "alpha_median": 2.6624231338500977
+    },
+    {
+      "epoch": 20,
+      "val_accuracy": 0.9640740740740741,
+      "layers": 7,
+      "stable_rank": 8.546802630408562,
+      "stable_rank_ratio": 0.19295893593155755,
+      "effective_rank_ratio": 0.818920087435889,
+      "outlier_fraction": 0.14935515873015873,
+      "alpha_median": 3.0077855587005615
+    },
+    {
+      "epoch": 30,
+      "val_accuracy": 0.9777777777777777,
+      "layers": 7,
+      "stable_rank": 8.573246921506728,
+      "stable_rank_ratio": 0.19394138523612425,
+      "effective_rank_ratio": 0.8192686074625247,
+      "outlier_fraction": 0.15047123015873015,
+      "alpha_median": 3.0913143157958984
+    }
+  ],
+  "final_layers": [
+    {
+      "name": "features.0.0.weight",
+      "shape": [
+        27,
+        32
+      ],
+      "spectral_norm": 2.6044984465383587,
+      "stable_rank": 4.884956224818352,
+      "effective_rank": 17.826082229614258,
+      "outlier_fraction": 0.1111111111111111,
+      "alpha": 2.3930092940681433
+    },
+    {
+      "name": "features.0.3.weight",
+      "shape": [
+        32,
+        288
+      ],
+      "spectral_norm": 2.858301159293957,
+      "stable_rank": 4.480087610500959,
+      "effective_rank": 26.700124740600586,
+      "outlier_fraction": 0.1875,
+      "alpha": 3.1765489820344497
+    },
+    {
+      "name": "features.1.0.weight",
+      "shape": [
+        64,
+        288
+      ],
+      "spectral_norm": 1.9284212884074179,
+      "stable_rank": 11.769381670447626,
+      "effective_rank": 52.01763916015625,
+      "outlier_fraction": 0.140625,
+      "alpha": 3.7182608093374725
+    },
+    {
+      "name": "features.1.3.weight",
+      "shape": [
+        64,
+        576
+      ],
+      "spectral_norm": 1.97177599964372,
+      "stable_rank": 10.87572064013238,
+      "effective_rank": 54.803558349609375,
+      "outlier_fraction": 0.171875,
+      "alpha": 3.3627963239372622
+    },
+    {
+      "name": "features.2.0.weight",
+      "shape": [
+        128,
+        576
+      ],
+      "spectral_norm": 1.8010172337112746,
+      "stable_rank": 14.236470165368566,
+      "effective_rank": 103.73612976074219,
+      "outlier_fraction": 0.1328125,
+      "alpha": 3.0913143770923575
+    },
+    {
+      "name": "features.2.3.weight",
+      "shape": [
+        128,
+        1152
+      ],
+      "spectral_norm": 2.0165287953637288,
+      "stable_rank": 8.732211053514447,
+      "effective_rank": 108.10578155517578,
+      "outlier_fraction": 0.109375,
+      "alpha": 2.0141041373419784
+    },
+    {
+      "name": "head.weight",
+      "shape": [
+        10,
+        128
+      ],
+      "spectral_norm": 2.847376826127286,
+      "stable_rank": 5.033901085764768,
+      "effective_rank": 9.161799430847168,
+      "outlier_fraction": 0.2,
+      "alpha": 2.5666466057082316
+    }
+  ]
+}
