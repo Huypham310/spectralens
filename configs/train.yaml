@@ -1,0 +1,17 @@
+# python -m spectralens.train model=resnet18 data=eurosat
+defaults:
+  - config
+  - _self_
+
+model: resnet18        # cnn | resnet18 | vit
+data: eurosat          # eurosat | cifar10
+epochs: 30
+batch_size: 256
+num_workers: 0         # images are already decoded in RAM
+lr: 0.1
+momentum: 0.9
+weight_decay: 5.0e-4
+warmup_epochs: 1
+amp: true              # bf16 autocast on CUDA
+# random init (0), early training, and the end: the spectra change fastest at the start
+checkpoint_epochs: [1, 2, 5, 10, 20, 30]

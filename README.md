@@ -78,6 +78,30 @@ about 650x faster than the full decomposition.
 python -m spectralens data eurosat --download   # or: cifar10
 ```
 
+## Training
+
+Three architectures, trained from scratch for 30 epochs with SGD + Nesterov (lr 0.1, 0.05 for the
+ViT), 1-epoch warm-up then cosine decay, weight decay 5e-4 except on biases and norm layers,
+bf16 autocast. Checkpoints are kept at epochs 0 (random init), 1, 2, 5, 10, 20 and 30 for the
+spectral analysis; every run is logged to MLflow.
+
+```bash
+python -m spectralens.train model=cnn,resnet18,vit data=eurosat,cifar10   # 6 runs
+```
+
+| Model | Params | EuroSAT test acc | CIFAR-10 test acc |
+|---|---:|---:|---:|
+| Small CNN (3 VGG blocks) | 0.29 M | 97.78% | 88.64% |
+| ResNet-18 (3x3 stem, no max-pool) | 11.2 M | **97.96%** | **92.30%** |
+| Tiny ViT (6 blocks, dim 192, 64 tokens) | 1.8 M | 93.56% | 78.08% |
+
+On an RTX 5070 Ti laptop GPU an epoch takes 3-17 s (ResNet-18 on CIFAR-10 is the slowest at
+~17 s), so all six runs fit in well under an hour. The ViT trails both CNNs, as expected for a
+small transformer without pre-training or heavy augmentation on 20-45k images.
+
+Hydra's `@hydra.main` CLI doesn't work on Python 3.14 (it hands argparse a non-string help
+object), so the trainer uses Hydra's compose API and expands `key=a,b` sweeps itself.
+
 ## Planned layout
 
 ```
