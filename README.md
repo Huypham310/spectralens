@@ -102,6 +102,38 @@ small transformer without pre-training or heavy augmentation on 20-45k images.
 Hydra's `@hydra.main` CLI doesn't work on Python 3.14 (it hands argparse a non-string help
 object), so the trainer uses Hydra's compose API and expands `key=a,b` sweeps itself.
 
+## Weight spectra
+
+`python -m spectralens.spectra` takes every checkpoint, turns each weight into a matrix (conv
+kernels flattened to out x in·k·k, attention's packed q/k/v split), and measures its singular
+value spectrum:
+
+- **stable rank** ||W||²_F / ||W||²₂ (as a fraction of the smaller dimension)
+- **outliers**: eigenvalues of W Wᵀ / n above the Marchenko-Pastur bulk edge σ²(1 + √q)², i.e.
+  structure that i.i.d. noise of the same variance can't produce
+- **tail exponent α**: Hill estimate on the top 10% of eigenvalues (smaller = heavier tail)
+
+| Run | Stable-rank ratio (init → end) | Beyond MP edge | α (median) |
+|---|---|---|---|
+| CNN, EuroSAT | 0.53 → 0.19 | 0.0% → 15.0% | 9.3 → 3.1 |
+| CNN, CIFAR-10 | 0.53 → 0.28 | 0.0% → 12.2% | 9.3 → 3.9 |
+| ResNet-18, EuroSAT | 0.53 → 0.27 | 0.1% → 7.6% | 13.2 → 4.6 |
+| ResNet-18, CIFAR-10 | 0.53 → 0.17 | 0.1% → 12.5% | 13.2 → 3.4 |
+| ViT, EuroSAT | 0.30 → 0.20 | 0.3% → 2.4% | 6.3 → 5.2 |
+| ViT, CIFAR-10 | 0.31 → 0.13 | 0.0% → 4.8% | 6.5 → 3.1 |
+
+![Spectra across training, CIFAR-10](reports/figures/spectra_cifar10.png)
+
+- At initialization every network matches the random-matrix prediction (essentially no
+  eigenvalues past the MP edge), which is a good sanity check of the measurement itself.
+- Training concentrates the weights: stable rank drops by roughly half, 5-15% of eigenvalues
+  leave the bulk, and the tails get heavy (α ≈ 3-4.6 for the CNNs, in the range Martin & Mahoney
+  associate with well-trained layers).
+- The small CNN gets most of its structure in the first epoch; ResNet-18 and the ViT build it
+  gradually over training.
+- The ViT moves least, matching its weaker accuracy, which makes it the interesting case for the
+  compression phase: low-rank structure is what truncated SVD can exploit.
+
 ## Planned layout
 
 ```
