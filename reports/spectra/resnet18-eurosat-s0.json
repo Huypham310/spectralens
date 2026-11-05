@@ -1,0 +1,329 @@
+{
+  "run": "resnet18-eurosat-s0",
+  "epochs": [
+    {
+      "epoch": 0,
+      "val_accuracy": 0.09259259259259259,
+      "layers": 21,
+      "stable_rank": 107.97687917904051,
+      "stable_rank_ratio": 0.5269070343723999,
+      "effective_rank_ratio": 0.9727643921682233,
+      "outlier_fraction": 0.000744047619047619,
+      "alpha_median": 13.221979141235352
+    },
+    {
+      "epoch": 1,
+      "val_accuracy": 0.30777777777777776,
+      "layers": 21,
+      "stable_rank": 66.93641760347384,
+      "stable_rank_ratio": 0.340133194807772,
+      "effective_rank_ratio": 0.9632429982829556,
+      "outlier_fraction": 0.03158137676366843,
+      "alpha_median": 7.978456974029541
+    },
+    {
+      "epoch": 2,
+      "val_accuracy": 0.7759259259259259,
+      "layers": 21,
+      "stable_rank": 60.67801107212579,
+      "stable_rank_ratio": 0.3190847761495227,
+      "effective_rank_ratio": 0.9605502680916425,
+      "outlier_fraction": 0.04124710648148148,
+      "alpha_median": 7.745060920715332
+    },
+    {
+      "epoch": 5,
+      "val_accuracy": 0.8511111111111112,
+      "layers": 21,
+      "stable_rank": 57.47774345725169,
+      "stable_rank_ratio": 0.303096235482009,
+      "effective_rank_ratio": 0.9574110970295295,
+      "outlier_fraction": 0.052497382054673726,
+      "alpha_median": 6.718806266784668
+    },
+    {
+      "epoch": 10,
+      "val_accuracy": 0.9248148148148149,
+      "layers": 21,
+      "stable_rank": 53.372375570063575,
+      "stable_rank_ratio": 0.2800639174397421,
+      "effective_rank_ratio": 0.9532369537118041,
+      "outlier_fraction": 0.06430913800705468,
+      "alpha_median": 5.469656467437744
+    },
+    {
+      "epoch": 20,
+      "val_accuracy": 0.9622222222222222,
+      "layers": 21,
+      "stable_rank": 50.7118599164356,
+      "stable_rank_ratio": 0.2674967917018297,
+      "effective_rank_ratio": 0.949255900849741,
+      "outlier_fraction": 0.07370273919753087,
+      "alpha_median": 4.680346488952637
+    },
+    {
+      "epoch": 30,
+      "val_accuracy": 0.9788888888888889,
+      "layers": 21,
+      "stable_rank": 50.853250313630234,
+      "stable_rank_ratio": 0.2688042452498466,
+      "effective_rank_ratio": 0.9491468656210251,
+      "outlier_fraction": 0.07584187610229277,
+      "alpha_median": 4.617369174957275
+    }
+  ],
+  "final_layers": [
+    {
+      "name": "conv1.weight",
+      "shape": [
+        27,
+        64
+      ],
+      "spectral_norm": 2.7480677541040452,
+      "stable_rank": 5.508651672528119,
+      "effective_rank": 19.95620346069336,
+      "outlier_fraction": 0.14814814814814814,
+      "alpha": 2.317069085120197
+    },
+    {
+      "name": "layer1.0.conv1.weight",
+      "shape": [
+        64,
+        576
+      ],
+      "spectral_norm": 2.0169933815632732,
+      "stable_rank": 14.542162942149353,
+      "effective_rank": 60.59170150756836,
+      "outlier_fraction": 0.125,
+      "alpha": 3.1427025023965274
+    },
+    {
+      "name": "layer1.0.conv2.weight",
+      "shape": [
+        64,
+        576
+      ],
+      "spectral_norm": 1.8529389242174386,
+      "stable_rank": 16.29508926211064,
+      "effective_rank": 61.21088409423828,
+      "outlier_fraction": 0.125,
+      "alpha": 3.7186305526276904
+    },
+    {
+      "name": "layer1.1.conv1.weight",
+      "shape": [
+        64,
+        576
+      ],
+      "spectral_norm": 1.6437419797100215,
+      "stable_rank": 18.393456818279223,
+      "effective_rank": 61.84836959838867,
+      "outlier_fraction": 0.109375,
+      "alpha": 4.195307229205534
+    },
+    {
+      "name": "layer1.1.conv2.weight",
+      "shape": [
+        64,
+        576
+      ],
+      "spectral_norm": 1.588554388091609,
+      "stable_rank": 19.411167432677605,
+      "effective_rank": 61.99411392211914,
+      "outlier_fraction": 0.09375,
+      "alpha": 4.518647652949669
+    },
+    {
+      "name": "layer2.0.conv1.weight",
+      "shape": [
+        128,
+        576
+      ],
+      "spectral_norm": 1.2848293743188746,
+      "stable_rank": 30.594485904236734,
+      "effective_rank": 121.18437957763672,
+      "outlier_fraction": 0.0859375,
+      "alpha": 3.530363636184055
+    },
+    {
+      "name": "layer2.0.conv2.weight",
+      "shape": [
+        128,
+        1152
+      ],
+      "spectral_norm": 1.6207077515594517,
+      "stable_rank": 34.47793597733942,
+      "effective_rank": 124.57426452636719,
+      "outlier_fraction": 0.0859375,
+      "alpha": 4.617369259332245
+    },
+    {
+      "name": "layer2.0.downsample.0.weight",
+      "shape": [
+        64,
+        128
+      ],
+      "spectral_norm": 1.591871793058648,
+      "stable_rank": 17.15099028859332,
+      "effective_rank": 58.47273635864258,
+      "outlier_fraction": 0.03125,
+      "alpha": 4.79969603649808
+    },
+    {
+      "name": "layer2.1.conv1.weight",
+      "shape": [
+        128,
+        1152
+      ],
+      "spectral_norm": 1.5594686931501025,
+      "stable_rank": 36.71859863226196,
+      "effective_rank": 124.61139678955078,
+      "outlier_fraction": 0.0859375,
+      "alpha": 4.508335441909688
+    },
+    {
+      "name": "layer2.1.conv2.weight",
+      "shape": [
+        128,
+        1152
+      ],
+      "spectral_norm": 1.4401258884796133,
+      "stable_rank": 41.49583289245199,
+      "effective_rank": 124.91873931884766,
+      "outlier_fraction": 0.0703125,
+      "alpha": 4.897134131729465
+    },
+    {
+      "name": "layer3.0.conv1.weight",
+      "shape": [
+        256,
+        1152
+      ],
+      "spectral_norm": 1.4133911633319713,
+      "stable_rank": 43.798283247596984,
+      "effective_rank": 244.64712524414062,
+      "outlier_fraction": 0.0546875,
+      "alpha": 3.7996893957019893
+    },
+    {
+      "name": "layer3.0.conv2.weight",
+      "shape": [
+        256,
+        2304
+      ],
+      "spectral_norm": 1.6637543621023942,
+      "stable_rank": 59.20035722351049,
+      "effective_rank": 250.28390502929688,
+      "outlier_fraction": 0.046875,
+      "alpha": 4.529434840514822
+    },
+    {
+      "name": "layer3.0.downsample.0.weight",
+      "shape": [
+        128,
+        256
+      ],
+      "spectral_norm": 1.4588216275168284,
+      "stable_rank": 37.28453988449728,
+      "effective_rank": 117.7134017944336,
+      "outlier_fraction": 0.0234375,
+      "alpha": 6.339650132757003
+    },
+    {
+      "name": "layer3.1.conv1.weight",
+      "shape": [
+        256,
+        2304
+      ],
+      "spectral_norm": 1.4460601847062575,
+      "stable_rank": 76.23784717724412,
+      "effective_rank": 250.76425170898438,
+      "outlier_fraction": 0.04296875,
+      "alpha": 5.287159853284432
+    },
+    {
+      "name": "layer3.1.conv2.weight",
+      "shape": [
+        256,
+        2304
+      ],
+      "spectral_norm": 1.4091622766075416,
+      "stable_rank": 78.41542321446259,
+      "effective_rank": 251.13795471191406,
+      "outlier_fraction": 0.0390625,
+      "alpha": 5.712097240979834
+    },
+    {
+      "name": "layer4.0.conv1.weight",
+      "shape": [
+        512,
+        2304
+      ],
+      "spectral_norm": 1.2513516997925505,
+      "stable_rank": 98.90270387732674,
+      "effective_rank": 494.1692199707031,
+      "outlier_fraction": 0.0234375,
+      "alpha": 5.831511764984477
+    },
+    {
+      "name": "layer4.0.conv2.weight",
+      "shape": [
+        512,
+        4608
+      ],
+      "spectral_norm": 1.6623038278510573,
+      "stable_rank": 109.80990249383241,
+      "effective_rank": 502.8448181152344,
+      "outlier_fraction": 0.02734375,
+      "alpha": 6.895992770251497
+    },
+    {
+      "name": "layer4.0.downsample.0.weight",
+      "shape": [
+        256,
+        512
+      ],
+      "spectral_norm": 1.6356918003544247,
+      "stable_rank": 58.12655605075154,
+      "effective_rank": 235.02581787109375,
+      "outlier_fraction": 0.02734375,
+      "alpha": 4.967691898096351
+    },
+    {
+      "name": "layer4.1.conv1.weight",
+      "shape": [
+        512,
+        4608
+      ],
+      "spectral_norm": 1.4156754204353892,
+      "stable_rank": 150.815659955612,
+      "effective_rank": 503.1026306152344,
+      "outlier_fraction": 0.02734375,
+      "alpha": 7.011825831223331
+    },
+    {
+      "name": "layer4.1.conv2.weight",
+      "shape": [
+        512,
+        4608
+      ],
+      "spectral_norm": 1.613801343722651,
+      "stable_rank": 115.45433736829388,
+      "effective_rank": 502.849853515625,
+      "outlier_fraction": 0.01953125,
+      "alpha": 6.873332130210902
+    },
+    {
+      "name": "fc.weight",
+      "shape": [
+        10,
+        512
+      ],
+      "spectral_norm": 2.16376030044695,
+      "stable_rank": 5.284274270478681,
+      "effective_rank": 9.280518531799316,
+      "outlier_fraction": 0.3,
+      "alpha": 2.8930323229035952
+    }
+  ]
+}
