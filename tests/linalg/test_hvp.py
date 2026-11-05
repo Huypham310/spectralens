@@ -4,6 +4,7 @@ from torch import nn
 from torch.func import functional_call
 
 from spectralens.linalg.hvp import (
+    batched_hessian_operator,
     flatten,
     hessian_operator,
     model_hessian_operator,
@@ -71,7 +72,22 @@ def test_linear_loss_has_zero_hessian():
     assert torch.count_nonzero(op.to_dense()) == 0
 
 
+def test_batched_operator_equals_hessian_of_the_full_batch():
+    model = _tiny_mlp()
+    x = torch.randn(10, 3, dtype=torch.float64)
+    y = torch.randint(0, 2, (10,))
+    loss_fn = nn.CrossEntropyLoss()
+    full = model_hessian_operator(model, loss_fn, x, y).to_dense()
+    # uneven batches on purpose: the size weighting has to be right
+    batches = [(x[:3], y[:3]), (x[3:4], y[3:4]), (x[4:], y[4:])]
+    torch.testing.assert_close(
+        batched_hessian_operator(model, loss_fn, batches).to_dense(), full, rtol=1e-10, atol=1e-12
+    )
+
+
 def test_errors():
+    with pytest.raises(ValueError):
+        batched_hessian_operator(_tiny_mlp(), nn.CrossEntropyLoss(), [])
     with pytest.raises(ValueError):
         hessian_operator(torch.tensor(1.0), [torch.zeros(2)])
     with pytest.raises(ValueError):

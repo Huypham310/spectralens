@@ -81,3 +81,45 @@ def model_hessian_operator(
     """
     loss = loss_fn(model(inputs), targets)
     return hessian_operator(loss, list(model.parameters()))
+
+
+def batched_hessian_operator(
+    model: nn.Module,
+    loss_fn: Callable[[Tensor, Tensor], Tensor],
+    batches: Sequence[tuple[Tensor, Tensor]],
+) -> LinearOperator:
+    """Hessian of the mean loss over several batches, rebuilt batch by batch on every product.
+
+    ``model_hessian_operator`` keeps one double-backward graph alive, which for a few thousand
+    images through ResNet-18 does not fit in 12 GB. Here each matvec redoes forward + grad per
+    batch and frees the graph right away: ~1.5x slower per product, but memory stays at one
+    batch. ``loss_fn`` must use mean reduction; batches are weighted by their size so the
+    result equals the Hessian of the mean over all samples.
+    """
+    params = [p for p in model.parameters() if p.requires_grad]
+    if not params:
+        raise ValueError("no parameters require grad")
+    if not batches:
+        raise ValueError("need at least one batch")
+    total = sum(int(y.shape[0]) for _, y in batches)
+    n = sum(p.numel() for p in params)
+    ref = params[0]
+
+    def matvec(v: Tensor) -> Tensor:
+        vs = unflatten_like(v.to(dtype=ref.dtype, device=ref.device), params)
+        out = torch.zeros(n, dtype=ref.dtype, device=ref.device)
+        for x, y in batches:
+            loss = loss_fn(model(x), y) * (y.shape[0] / total)
+            grads = torch.autograd.grad(loss, params, create_graph=True, allow_unused=True)
+            dot = sum((g * vi).sum() for g, vi in zip(grads, vs, strict=True) if g is not None)
+            if not isinstance(dot, Tensor) or not dot.requires_grad:
+                continue
+            hv = torch.autograd.grad(dot, params, allow_unused=True)
+            out += flatten(
+                [torch.zeros_like(p) if h is None else h for h, p in zip(hv, params, strict=True)]
+            )
+        return out
+
+    return LinearOperator(
+        shape=(n, n), matvec=matvec, rmatvec=matvec, dtype=ref.dtype, device=ref.device
+    )
