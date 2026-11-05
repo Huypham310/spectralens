@@ -4,11 +4,16 @@ Everything here works on dense tensors or on matrix-free operators (a callable v
 so the same routines can be pointed at a weight matrix or at a network's Hessian.
 """
 
-from spectralens.linalg.hvp import hessian_operator, model_hessian_operator
+from spectralens.linalg.hvp import (
+    batched_hessian_operator,
+    hessian_operator,
+    model_hessian_operator,
+)
 from spectralens.linalg.lanczos import LanczosResult, lanczos, lanczos_eigsh
 from spectralens.linalg.operators import LinearOperator, aslinearoperator
 from spectralens.linalg.power import EigResult, power_iteration
 from spectralens.linalg.rsvd import SVDResult, randomized_range_finder, randomized_svd
+from spectralens.linalg.slq import SpectralDensity, slq
 from spectralens.linalg.trace import TraceEstimate, hutchinson, hutchpp
 
 __all__ = [
@@ -16,8 +21,10 @@ __all__ = [
     "LanczosResult",
     "LinearOperator",
     "SVDResult",
+    "SpectralDensity",
     "TraceEstimate",
     "aslinearoperator",
+    "batched_hessian_operator",
     "hessian_operator",
     "hutchinson",
     "hutchpp",
@@ -27,4 +34,5 @@ __all__ = [
     "power_iteration",
     "randomized_range_finder",
     "randomized_svd",
+    "slq",
 ]
