@@ -6,7 +6,13 @@ from torch.utils.data import DataLoader, TensorDataset
 
 from spectralens.models import build_model
 from spectralens.train import expand_sweep, load_config
-from spectralens.training import evaluate, make_optimizer, train_epoch, warmup_cosine
+from spectralens.training import (
+    evaluate,
+    make_optimizer,
+    sam_perturb,
+    train_epoch,
+    warmup_cosine,
+)
 
 
 def test_warmup_then_cosine():
@@ -43,6 +49,42 @@ def test_training_can_overfit_a_tiny_batch():
         last = train_epoch(model, loader, opt, None, device, amp=False)
     assert last.loss < first.loss / 5
     assert evaluate(model, loader, device, amp=False).accuracy > 0.9
+
+
+def test_sam_perturbation_has_norm_rho_along_the_gradient():
+    a = torch.nn.Parameter(torch.tensor([3.0, 0.0]))
+    b = torch.nn.Parameter(torch.tensor([4.0]))
+    a.grad, b.grad = torch.tensor([3.0, 0.0]), torch.tensor([4.0])  # ||g|| = 5
+    steps = sam_perturb([a, b], rho=0.5)
+    torch.testing.assert_close(steps[0], torch.tensor([0.3, 0.0]))
+    torch.testing.assert_close(steps[1], torch.tensor([0.4]))
+    torch.testing.assert_close(a.detach(), torch.tensor([3.3, 0.0]))
+
+
+def test_sam_uses_the_gradient_at_the_perturbed_point():
+    # one SAM step through the real loop vs the same update done by hand
+    torch.manual_seed(0)
+    x, y = torch.randn(8, 5), torch.randint(0, 3, (8,))
+    loader = DataLoader(TensorDataset(x, y), batch_size=8)
+    model = torch.nn.Linear(5, 3)
+    w0 = [p.detach().clone() for p in model.parameters()]
+    opt = torch.optim.SGD(model.parameters(), lr=0.1)
+    train_epoch(model, loader, opt, None, torch.device("cpu"), amp=False, sam_rho=0.05)
+
+    ref = torch.nn.Linear(5, 3)
+    with torch.no_grad():
+        for p, w in zip(ref.parameters(), w0, strict=True):
+            p.copy_(w)
+    loss_fn = torch.nn.CrossEntropyLoss()
+    loss_fn(ref(x), y).backward()
+    params = list(ref.parameters())
+    sam_perturb(params, 0.05)
+    for p in params:
+        p.grad = None
+    loss_fn(ref(x), y).backward()
+    for trained, p, w in zip(model.parameters(), params, w0, strict=True):
+        # the step starts from w0 (not the perturbed point) but uses the perturbed gradient
+        torch.testing.assert_close(trained.detach(), w - 0.1 * p.grad)
 
 
 def test_evaluate_counts_correctly():

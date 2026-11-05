@@ -13,5 +13,7 @@ momentum: 0.9
 weight_decay: 5.0e-4
 warmup_epochs: 1
 amp: true              # bf16 autocast on CUDA
+sam_rho: 0.0           # > 0 turns on SAM (2x cost per step)
+tag: ""                # appended to the run name, e.g. tag=bs32 for the sharpness sweep
 # random init (0), early training, and the end: the spectra change fastest at the start
 checkpoint_epochs: [1, 2, 5, 10, 20, 30]
