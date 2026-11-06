@@ -1,0 +1,140 @@
+{
+  "run": "cnn-eurosat-s0",
+  "checkpoint": "epoch_030.pt",
+  "base": {
+    "accuracy": 0.9777777777777777,
+    "macs": 154535168,
+    "params": 288746
+  },
+  "points": [
+    {
+      "method": "svd",
+      "energy": 0.8,
+      "layers_replaced": 5,
+      "macs_ratio": 0.40606938091917044,
+      "params_ratio": 0.39966614256128224,
+      "accuracy": 0.7074074074074074,
+      "accuracy_finetuned": 0.977037037037037
+    },
+    {
+      "method": "svd",
+      "energy": 0.9,
+      "layers_replaced": 5,
+      "macs_ratio": 0.632106524774995,
+      "params_ratio": 0.6591052343582249,
+      "accuracy": 0.93,
+      "accuracy_finetuned": 0.977037037037037
+    },
+    {
+      "method": "svd",
+      "energy": 0.95,
+      "layers_replaced": 5,
+      "macs_ratio": 0.8183857282246588,
+      "params_ratio": 0.8483927050071689,
+      "accuracy": 0.9751851851851852,
+      "accuracy_finetuned": 0.975925925925926
+    },
+    {
+      "method": "svd",
+      "energy": 0.99,
+      "layers_replaced": 0,
+      "macs_ratio": 1.0,
+      "params_ratio": 1.0,
+      "accuracy": 0.9777777777777777,
+      "accuracy_finetuned": 0.9788888888888889
+    },
+    {
+      "method": "tucker",
+      "energy": 0.8,
+      "layers_replaced": 5,
+      "macs_ratio": 0.22562134206241002,
+      "params_ratio": 0.22509402727656833,
+      "accuracy": 0.7125925925925926,
+      "accuracy_finetuned": 0.9722222222222222
+    },
+    {
+      "method": "tucker",
+      "energy": 0.9,
+      "layers_replaced": 5,
+      "macs_ratio": 0.45071092167188764,
+      "params_ratio": 0.49498867516779455,
+      "accuracy": 0.9451851851851852,
+      "accuracy_finetuned": 0.9777777777777777
+    },
+    {
+      "method": "tucker",
+      "energy": 0.95,
+      "layers_replaced": 5,
+      "macs_ratio": 0.6968705531157801,
+      "params_ratio": 0.754812187874464,
+      "accuracy": 0.9685185185185186,
+      "accuracy_finetuned": 0.9781481481481481
+    },
+    {
+      "method": "tucker",
+      "energy": 0.99,
+      "layers_replaced": 0,
+      "macs_ratio": 1.0,
+      "params_ratio": 1.0,
+      "accuracy": 0.9777777777777777,
+      "accuracy_finetuned": 0.9774074074074074
+    }
+  ],
+  "sensitivity": {
+    "rank_ratio": 0.25,
+    "layers": [
+      {
+        "layer": "features.0.3",
+        "shape": [
+          32,
+          288
+        ],
+        "stable_rank_ratio": 0.14000273782815503,
+        "discarded_energy": 0.28847867056964466,
+        "accuracy_drop": 0.2792592592592592
+      },
+      {
+        "layer": "features.1.0",
+        "shape": [
+          64,
+          288
+        ],
+        "stable_rank_ratio": 0.18389658860074096,
+        "discarded_energy": 0.24656005579645435,
+        "accuracy_drop": 0.18222222222222217
+      },
+      {
+        "layer": "features.1.3",
+        "shape": [
+          64,
+          576
+        ],
+        "stable_rank_ratio": 0.1699331350020652,
+        "discarded_energy": 0.31080789381571866,
+        "accuracy_drop": 0.05962962962962959
+      },
+      {
+        "layer": "features.2.0",
+        "shape": [
+          128,
+          576
+        ],
+        "stable_rank_ratio": 0.11122242316694195,
+        "discarded_energy": 0.2182793845700149,
+        "accuracy_drop": 0.002592592592592591
+      },
+      {
+        "layer": "features.2.3",
+        "shape": [
+          128,
+          1152
+        ],
+        "stable_rank_ratio": 0.06822039885558213,
+        "discarded_energy": 0.2657364032795279,
+        "accuracy_drop": 0.00037037037037035425
+      }
+    ],
+    "spearman_drop_vs_stable_rank": 0.7,
+    "spearman_drop_vs_discarded_energy": 0.3
+  }
+}

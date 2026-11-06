@@ -1,0 +1,174 @@
+{
+  "run": "vit-eurosat-s0",
+  "checkpoint": "epoch_030.pt",
+  "base": {
+    "accuracy": 0.9355555555555556,
+    "macs": 127111296,
+    "params": 1834186
+  },
+  "points": [
+    {
+      "method": "svd",
+      "energy": 0.8,
+      "layers_replaced": 12,
+      "macs_ratio": 0.8866001649452147,
+      "params_ratio": 0.8790962312437234,
+      "accuracy": 0.9285185185185185,
+      "accuracy_finetuned": 0.9362962962962963
+    },
+    {
+      "method": "svd",
+      "energy": 0.9,
+      "layers_replaced": 11,
+      "macs_ratio": 0.9905745591642776,
+      "params_ratio": 0.9899508555838938,
+      "accuracy": 0.9307407407407408,
+      "accuracy_finetuned": 0.9366666666666666
+    },
+    {
+      "method": "svd",
+      "energy": 0.95,
+      "layers_replaced": 0,
+      "macs_ratio": 1.0,
+      "params_ratio": 1.0,
+      "accuracy": 0.9355555555555556,
+      "accuracy_finetuned": 0.9359259259259259
+    },
+    {
+      "method": "svd",
+      "energy": 0.99,
+      "layers_replaced": 0,
+      "macs_ratio": 1.0,
+      "params_ratio": 1.0,
+      "accuracy": 0.9355555555555556,
+      "accuracy_finetuned": 0.9333333333333333
+    }
+  ],
+  "sensitivity": {
+    "rank_ratio": 0.25,
+    "layers": [
+      {
+        "layer": "blocks.0.mlp.0",
+        "shape": [
+          384,
+          192
+        ],
+        "stable_rank_ratio": 0.16677066775425775,
+        "discarded_energy": 0.43253158318706014,
+        "accuracy_drop": 0.0018518518518518823
+      },
+      {
+        "layer": "blocks.0.mlp.2",
+        "shape": [
+          192,
+          384
+        ],
+        "stable_rank_ratio": 0.12266486005592343,
+        "discarded_energy": 0.39909652336260115,
+        "accuracy_drop": 0.002962962962962945
+      },
+      {
+        "layer": "blocks.1.mlp.0",
+        "shape": [
+          384,
+          192
+        ],
+        "stable_rank_ratio": 0.2401549592732101,
+        "discarded_energy": 0.4756201626920788,
+        "accuracy_drop": 0.001481481481481528
+      },
+      {
+        "layer": "blocks.1.mlp.2",
+        "shape": [
+          192,
+          384
+        ],
+        "stable_rank_ratio": 0.20812233727880583,
+        "discarded_energy": 0.45922232975287613,
+        "accuracy_drop": 0.0011111111111111738
+      },
+      {
+        "layer": "blocks.2.mlp.0",
+        "shape": [
+          384,
+          192
+        ],
+        "stable_rank_ratio": 0.2925204894908731,
+        "discarded_energy": 0.4846179317677433,
+        "accuracy_drop": 0.0033333333333334103
+      },
+      {
+        "layer": "blocks.2.mlp.2",
+        "shape": [
+          192,
+          384
+        ],
+        "stable_rank_ratio": 0.23878663210718187,
+        "discarded_energy": 0.4742490196224724,
+        "accuracy_drop": 0.0011111111111111738
+      },
+      {
+        "layer": "blocks.3.mlp.0",
+        "shape": [
+          384,
+          192
+        ],
+        "stable_rank_ratio": 0.2898380034605423,
+        "discarded_energy": 0.4838290510414468,
+        "accuracy_drop": 0.0022222222222222365
+      },
+      {
+        "layer": "blocks.3.mlp.2",
+        "shape": [
+          192,
+          384
+        ],
+        "stable_rank_ratio": 0.2328037100727163,
+        "discarded_energy": 0.4784206802046844,
+        "accuracy_drop": -0.00037037037037035425
+      },
+      {
+        "layer": "blocks.4.mlp.0",
+        "shape": [
+          384,
+          192
+        ],
+        "stable_rank_ratio": 0.3248423104743641,
+        "discarded_energy": 0.486720967695089,
+        "accuracy_drop": -0.00037037037037035425
+      },
+      {
+        "layer": "blocks.4.mlp.2",
+        "shape": [
+          192,
+          384
+        ],
+        "stable_rank_ratio": 0.26874015404774493,
+        "discarded_energy": 0.4804467154593339,
+        "accuracy_drop": -0.0007407407407407085
+      },
+      {
+        "layer": "blocks.5.mlp.0",
+        "shape": [
+          384,
+          192
+        ],
+        "stable_rank_ratio": 0.31906172111934644,
+        "discarded_energy": 0.4857615572206826,
+        "accuracy_drop": -0.0007407407407407085
+      },
+      {
+        "layer": "blocks.5.mlp.2",
+        "shape": [
+          192,
+          384
+        ],
+        "stable_rank_ratio": 0.2214048579271295,
+        "discarded_energy": 0.47949566077038835,
+        "accuracy_drop": -0.0007407407407407085
+      }
+    ],
+    "spearman_drop_vs_stable_rank": -0.21909358274946805,
+    "spearman_drop_vs_discarded_energy": -0.3498429789064087
+  }
+}
