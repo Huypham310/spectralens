@@ -49,6 +49,22 @@ def _autocast(device: torch.device, amp: bool):
     return torch.autocast(device.type, dtype=torch.bfloat16, enabled=amp and device.type == "cuda")
 
 
+@torch.no_grad()
+def sam_perturb(params: list[nn.Parameter], rho: float) -> list[torch.Tensor]:
+    """Move ``params`` to the (first-order) worst point in an L2 ball of radius ``rho``.
+
+    SAM (Foret et al., 2021) minimizes max_{||e|| <= rho} L(w + e); to first order the
+    maximizer is e = rho * g / ||g||. Returns the steps so they can be undone.
+    """
+    grads = [p.grad for p in params]
+    norm = torch.linalg.vector_norm(torch.stack([torch.linalg.vector_norm(g) for g in grads]))
+    scale = rho / (norm + 1e-12)
+    steps = [g * scale for g in grads]
+    for p, e in zip(params, steps, strict=True):
+        p.add_(e)
+    return steps
+
+
 def train_epoch(
     model: nn.Module,
     loader: DataLoader,
@@ -56,7 +72,10 @@ def train_epoch(
     scheduler,
     device: torch.device,
     amp: bool = True,
+    sam_rho: float = 0.0,
 ) -> EpochStats:
+    """One pass over ``loader``. ``sam_rho > 0`` switches to SAM: two forward/backward passes
+    per step, the update uses the gradient taken at the perturbed weights."""
     model.train()
     loss_fn = nn.CrossEntropyLoss()
     total_loss = correct = seen = 0.0
@@ -67,6 +86,16 @@ def train_epoch(
             loss = loss_fn(logits, y)
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
+        if sam_rho > 0:
+            params = [p for p in model.parameters() if p.grad is not None]
+            steps = sam_perturb(params, sam_rho)
+            optimizer.zero_grad(set_to_none=True)
+            # BN running stats also see this second pass; most SAM implementations accept that
+            with _autocast(device, amp):
+                loss_fn(model(x), y).backward()
+            with torch.no_grad():
+                for p, e in zip(params, steps, strict=True):
+                    p.sub_(e)
         optimizer.step()
         if scheduler is not None:
             scheduler.step()

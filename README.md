@@ -134,6 +134,47 @@ value spectrum:
 - The ViT moves least, matching its weaker accuracy, which makes it the interesting case for the
   compression phase: low-rank structure is what truncated SVD can exploit.
 
+## Loss curvature (Hessian)
+
+`python -m spectralens.hessian` measures the curvature of the training loss at every checkpoint
+without ever forming the Hessian (290K x 290K for the small CNN):
+
+- **λ_max**: top eigenvalues by Lanczos on Hessian-vector products (double backprop).
+- **trace and eigenvalue density**: stochastic Lanczos quadrature. Each Rademacher probe gives a
+  Gauss quadrature rule (nodes = Ritz values, weights = squared first components of the Ritz
+  vectors); averaged over probes and smoothed with a Gaussian, that's the spectral density.
+- The Hessian is of the mean loss over a fixed, class-balanced set of 512 un-augmented training
+  images, with the model in eval mode, and is recomputed batch by batch on every product so
+  memory stays at one batch.
+
+The experiment: the small CNN on EuroSAT, same recipe (SGD + Nesterov, lr 0.1, cosine, 30
+epochs), only the batch size changes, plus one run with SAM (ρ = 0.05) at batch 128.
+
+| Run | λ_max (final) | Trace (final) | Test accuracy |
+|---|---:|---:|---:|
+| batch 32 | 44.5 | 187 | **98.30%** |
+| batch 128 | 72.0 | 402 | 98.26% |
+| batch 256 | 100.7 | 669 | 97.78% |
+| batch 512 | 240.7 | 980 | 97.11% |
+| batch 128 + SAM | **40.5** | **118** | 97.89% |
+
+![Hessian across training](reports/figures/hessian_batch_size.png)
+
+- **Bigger batches end in sharper minima.** From batch 32 to 512 the top eigenvalue grows 5.4x
+  and the trace 5.2x, monotonically, and test accuracy drops 1.2 points: the
+  Keskar et al. (2017) picture, reproduced on a small scale.
+- **SAM does what it's designed to do to the curvature:** at the same batch size it lowers
+  λ_max by 44% and the trace by 71%, to below the batch-32 run. Here that did *not* buy
+  accuracy (-0.37 points vs plain batch 128), so on EuroSAT, where every run is already at
+  97-98%, flatness and generalization are correlated across batch sizes but not causally
+  linked through SAM. One seed per run, so differences under ~0.3 points are within noise.
+- Curvature jumps from ~0.5 at initialization to its peak within the first epoch or two, then
+  relaxes as the learning rate decays.
+
+Cost: about 110 Hessian-vector products per checkpoint (30 Lanczos steps + 2 SLQ probes x 40
+steps), ~72 s on a laptop RTX 5070 Ti. cuDNN has no fast kernels for the convolution double
+backward, which is what dominates; 35 checkpoints took 43 minutes.
+
 ## Planned layout
 
 ```

@@ -79,7 +79,7 @@ def run(cfg: DictConfig) -> float:
     warmup = int(cfg.warmup_epochs * len(loaders["train"]))
     scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, warmup_cosine(steps, warmup))
 
-    run_name = f"{cfg.model}-{cfg.data}-s{cfg.seed}"
+    run_name = f"{cfg.model}-{cfg.data}-s{cfg.seed}" + (f"-{cfg.tag}" if cfg.tag else "")
     ckpt_dir = Path(cfg.paths.checkpoints) / run_name
     mlflow.set_tracking_uri(cfg.mlflow.tracking_uri)
     mlflow.set_experiment(cfg.mlflow.experiment)
@@ -95,7 +95,9 @@ def run(cfg: DictConfig) -> float:
         save_checkpoint(ckpt_dir / "epoch_000.pt", model, 0, cfg, val.accuracy)
         start = time.perf_counter()
         for epoch in range(1, cfg.epochs + 1):
-            tr = train_epoch(model, loaders["train"], optimizer, scheduler, device, cfg.amp)
+            tr = train_epoch(
+                model, loaders["train"], optimizer, scheduler, device, cfg.amp, cfg.sam_rho
+            )
             val = evaluate(model, loaders["val"], device, cfg.amp)
             mlflow.log_metrics(
                 {
