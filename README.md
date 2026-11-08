@@ -289,6 +289,23 @@ smaller drop) but with 5-19 layers per model and ρ around 0.3 on ResNet-18 it's
 could pick ranks by; where a layer sits in the network (early convs, the downsampling path)
 matters at least as much as its spectrum.
 
+## Report
+
+[`paper/main.pdf`](paper/main.pdf) (9 pages) writes the three experiments up as a
+short paper: the toolkit with the guarantees it relies on (Eckart-Young-Mirsky, the
+Halko-Martinsson-Tropp randomized SVD bound, Kaniel-Paige-Saad convergence for Lanczos,
+Hutchinson / Hutch++ variance, SLQ as Gauss quadrature, Pearlmutter's Hessian-vector product),
+the Marchenko-Pastur baseline for the weight spectra, all result tables and figures, and a
+limitations section (one seed per run, Hessian in eval mode on 512 images, uniform rank
+thresholds).
+
+```bash
+tectonic paper/main.tex            # https://tectonic-typesetting.github.io, fetches packages itself
+```
+
+Figures are read straight from `reports/figures/`, so re-running an experiment and rebuilding
+updates the paper.
+
 ## Planned layout
 
 ```
