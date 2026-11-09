@@ -33,7 +33,6 @@ paper/*.blg
 paper/*.synctex.gz
 paper/*.fdb_latexmk
 paper/*.fls
-paper/main.pdf
 
 # Env and OS
 .env
