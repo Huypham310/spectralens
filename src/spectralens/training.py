@@ -103,6 +103,10 @@ def train_epoch(
         total_loss += loss.item() * n
         correct += (logits.argmax(1) == y).sum().item()
         seen += n
+    if seen == 0:
+        # the train loader drops the last partial batch: a split smaller than one batch gives
+        # zero steps, which used to surface as a ZeroDivisionError here
+        raise ValueError("training loader produced no batches (split smaller than one batch?)")
     return EpochStats(total_loss / seen, correct / seen, int(seen))
 
 

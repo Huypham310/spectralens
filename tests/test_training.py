@@ -87,6 +87,15 @@ def test_sam_uses_the_gradient_at_the_perturbed_point():
         torch.testing.assert_close(trained.detach(), w - 0.1 * p.grad)
 
 
+def test_empty_train_loader_is_a_clear_error():
+    x, y = torch.randn(10, 3, 32, 32), torch.randint(0, 4, (10,))
+    loader = DataLoader(TensorDataset(x, y), batch_size=16, drop_last=True)  # 10 < 16: no batch
+    model = build_model("cnn", 4, 32)
+    opt = make_optimizer(model, lr=0.05, momentum=0.9, weight_decay=0.0)
+    with pytest.raises(ValueError, match="no batches"):
+        train_epoch(model, loader, opt, None, torch.device("cpu"), amp=False)
+
+
 def test_evaluate_counts_correctly():
     class Fixed(torch.nn.Module):
         def forward(self, x):

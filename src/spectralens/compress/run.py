@@ -77,7 +77,7 @@ def run_one(run_dir: Path, args, device, data_cache: dict) -> dict:
     spec = SPECS[ckpt["data"]]
     if ckpt["data"] not in data_cache:
         splits = build_datasets(ckpt["data"], args.data, seed=0)
-        data_cache[ckpt["data"]] = make_loaders(splits, 256, 0, seed=0)
+        data_cache[ckpt["data"]] = make_loaders(splits, args.batch_size, 0, seed=0)
     loaders = data_cache[ckpt["data"]]
     shape = (spec.in_channels, spec.image_size, spec.image_size)
 
@@ -189,6 +189,7 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--energies", type=float, nargs="+", default=list(ENERGIES))
     p.add_argument("--finetune-epochs", type=int, default=2)
     p.add_argument("--lr", type=float, default=0.01)
+    p.add_argument("--batch-size", type=int, default=256)
     p.add_argument("--sensitivity-ratio", type=float, default=0.25)
     p.add_argument("--out", default="reports")
     p.add_argument("--device", default="auto")
