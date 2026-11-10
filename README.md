@@ -232,63 +232,6 @@ smaller drop) but with 5-19 layers per model and ρ around 0.3 on ResNet-18 it's
 could pick ranks by; where a layer sits in the network (early convs, the downsampling path)
 matters at least as much as its spectrum.
 
-## Low-rank compression
-
-`spectralens.compress` swaps trained layers for factorized ones:
-
-- **Truncated SVD** (best rank-r approximation by Eckart-Young-Mirsky): a Linear becomes two
-  Linears through an r-dim bottleneck, a k x k conv becomes a k x k conv to r channels plus a
-  1x1 conv. A test checks the rank-r spectral error equals the (r+1)-th singular value.
-- **Tucker-2** (HOSVD on the output- and input-channel modes): a k x k conv becomes
-  1x1 (in -> r_in), k x k core (r_in -> r_out), 1x1 (r_out -> out). Exact at full ranks and on
-  kernels with a planted low multilinear rank.
-- Ranks keep a fraction of the squared singular values ("energy"); a layer is only replaced
-  when the factorization is actually smaller. The RGB stem, 10-way heads and attention's
-  functionally-called projections stay dense. MACs are counted from one forward pass with
-  hooks (convs, linears, and attention including QK^T and AV).
-
-`python -m spectralens.compress.run` sweeps energy 0.80 / 0.90 / 0.95 / 0.99 on the final
-EuroSAT checkpoints, scores on the test split, then fine-tunes 2 epochs (SGD, lr 0.01, cosine)
-and scores again:
-
-| Model | Method, energy | MACs | Params | Test acc, no fine-tune | Test acc, 2-epoch fine-tune |
-|---|---|---:|---:|---:|---:|
-| CNN (dense: 97.78%) | Tucker-2, 0.90 | **45.1%** | 49.5% | 94.52% | **97.78%** |
-| | Tucker-2, 0.80 | 22.6% | 22.5% | 71.26% | 97.22% |
-| | SVD, 0.80 | 40.6% | 40.0% | 70.74% | 97.70% |
-| ResNet-18 (dense: 98.00%) | Tucker-2, 0.80 | **58.9%** | 60.6% | 95.37% | 97.67% |
-| | SVD, 0.80 | 72.8% | 74.8% | 95.81% | 98.04% |
-| | Tucker-2, 0.90 | 84.5% | 85.3% | 96.48% | 98.00% |
-| ViT (dense: 93.56%) | SVD, 0.80 | 88.7% | 87.9% | 92.85% | 93.63% |
-
-![accuracy vs MACs](reports/figures/compress_tradeoff.png)
-
-- **Tucker-2 beats plain SVD on convs** at every budget: it compresses both channel modes
-  instead of folding the spatial kernel into one side.
-- **Two epochs of fine-tuning recover almost everything**: the CNN keeps its full accuracy at
-  45% of the MACs, ResNet-18 loses 0.33 points at 59%. (Fine-tuning the *dense* models the same
-  way moves them by at most +0.1 points, so this is recovery, not extra training.)
-- **The ViT barely compresses.** At 95% energy no factorization is smaller than the dense layer:
-  its weights are close to full rank, which matches the weight-spectra section (its spectra
-  moved least during training).
-
-**Does stable rank predict which layers tolerate compression?** Each eligible layer was cut to
-25% of its rank on its own (no fine-tuning) and the accuracy drop compared with the layer's
-stable rank ratio:
-
-| Model | Layers | Spearman ρ (drop vs stable rank) |
-|---|---:|---:|
-| CNN | 5 | +0.70 |
-| ResNet-18 | 19 | +0.31 |
-| ViT | 12 | -0.22 |
-
-![per-layer sensitivity](reports/figures/compress_sensitivity.png)
-
-Only weakly, and not on the ViT. The direction is the expected one on the CNNs (low stable rank,
-smaller drop) but with 5-19 layers per model and ρ around 0.3 on ResNet-18 it's not a rule one
-could pick ranks by; where a layer sits in the network (early convs, the downsampling path)
-matters at least as much as its spectrum.
-
 ## Report
 
 [`paper/main.pdf`](paper/main.pdf) (9 pages) writes the three experiments up as a
@@ -305,6 +248,27 @@ tectonic paper/main.tex            # https://tectonic-typesetting.github.io, fet
 
 Figures are read straight from `reports/figures/`, so re-running an experiment and rebuilding
 updates the paper.
+
+## Tests
+
+```bash
+pytest --cov                     # 111 tests, ~98% line coverage, fails under 95%
+```
+
+- **Numerics** are checked against `torch.linalg` / SciPy (including `eigsh` on a sparse
+  Laplacian), against closed forms (Eckart-Young error of a truncated layer, exact SLQ on small
+  matrices, Tucker-2 on a planted low multilinear rank kernel) and with Hypothesis-generated
+  matrices against the randomized SVD error bound.
+- **End to end on CPU** (`tests/test_pipeline_e2e.py`): `build_datasets` is swapped for one that
+  builds the same splits from torchvision's FakeData, then the real scripts run in sequence -
+  train 2 epochs, weight spectra, Hessian, compression sweep, the `data` / `info` CLI - and their
+  JSON reports and figures are checked. About 20 s, no dataset or GPU needed.
+
+Writing those end-to-end tests turned up two real problems: the compression script fine-tuned with
+a hard-coded batch of 256, and on a split smaller than one batch the training loop divided by
+zero (it now raises a clear error and the batch size is a flag); and a module-scoped fixture set
+up before the function-scoped data patch had the "fake" test silently training on the real
+EuroSAT for two minutes.
 
 ## Planned layout
 

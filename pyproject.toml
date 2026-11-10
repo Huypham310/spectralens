@@ -42,6 +42,16 @@ target-version = "py311"
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "NPY"]
 
+[tool.coverage.run]
+source = ["spectralens"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+# measured at 98%; the floor leaves room for a platform-specific branch or two
+fail_under = 95
+exclude_lines = ["pragma: no cover", "if __name__ == .__main__.:"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
