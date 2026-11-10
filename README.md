@@ -270,6 +270,24 @@ zero (it now raises a clear error and the batch size is a flag); and a module-sc
 up before the function-scoped data patch had the "fake" test silently training on the real
 EuroSAT for two minutes.
 
+## CI and Docker
+
+- **GitHub Actions** (`.github/workflows/ci.yml`): `ruff check` + `ruff format --check`, then the
+  test suite on Python 3.11 and 3.12 with CPU-only PyTorch wheels (the default index would pull
+  ~2 GB of CUDA libraries a runner can't use). Coverage below 95% fails the build.
+- **Docker** (CPU): for re-running the analyses on saved checkpoints anywhere; training wants a
+  GPU, so the image doesn't try to.
+
+```bash
+docker build -t spectralens .
+docker run --rm -v ./checkpoints:/app/checkpoints:ro -v ./reports:/app/reports \
+    spectralens python -m spectralens.spectra --run cnn-eurosat-s0
+```
+
+Running the test suite inside that image (Linux, Python 3.12) gives the same result as on
+Windows: 111 passed, 97.7% coverage; the container also reproduces the weight-spectra numbers
+above exactly. The image is 2.5 GB, almost all of it PyTorch.
+
 ## Planned layout
 
 ```
