@@ -1,0 +1,15 @@
+.git
+.venv
+.hypothesis
+.pytest_cache
+.ruff_cache
+.coverage
+__pycache__
+data
+checkpoints
+reports
+mlflow.db
+mlruns
+outputs
+paper
+tests
