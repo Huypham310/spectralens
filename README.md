@@ -1,5 +1,7 @@
 # SpectraLens
 
+[![CI](https://github.com/Huypham310/spectralens/actions/workflows/ci.yml/badge.svg)](https://github.com/Huypham310/spectralens/actions/workflows/ci.yml)
+
 A linear-algebra lens on vision networks.
 
 SpectraLens is a research-style project that looks at image classifiers through their
@@ -8,10 +10,33 @@ much of each layer can be thrown away with a low-rank approximation before accur
 
 All of the numerical linear algebra is written from scratch in PyTorch (power iteration,
 Lanczos, randomized SVD, stochastic trace estimation, Hessian-vector products) and checked
-against `torch.linalg` / SciPy before it is used on real models.
+against `torch.linalg` / SciPy before it is used on real models. The results are written up as a
+9-page paper: [`paper/main.pdf`](paper/main.pdf).
 
-> Status: early work in progress. The sections below describe the plan; results will be added
-> as each part lands.
+## Key results
+
+| | |
+|---|---|
+| Toolkit | Randomized SVD within 2% of optimal error at ~650x the speed of a full SVD (4096 x 4096); Lanczos top-10 eigenvalues 8.7x faster than a dense solver |
+| Training | ResNet-18 from scratch: 97.96% on EuroSAT, 92.30% on CIFAR-10 (small CNN 97.78% / 88.64%, tiny ViT 93.56% / 78.08%) |
+| Weight spectra | At init every layer sits inside the Marchenko-Pastur bulk; training halves the stable rank, pushes 5-15% of eigenvalues out of the bulk and makes the tails heavy (Hill exponent 9-13 -> 3-4.6) |
+| Curvature | Batch 32 -> 512: top Hessian eigenvalue 44.5 -> 240.7 (5.4x sharper) and -1.2 points of accuracy; SAM cuts it by 44% (trace by 71%) without improving accuracy here |
+| Compression | Tucker-2 keeps the CNN at full accuracy with 45% of the MACs, ResNet-18 within 0.33 points at 59%; the ViT is close to full rank and barely compresses; stable rank predicts per-layer sensitivity only weakly (rho = 0.31) |
+| Engineering | 111 tests at 98% coverage incl. CPU end-to-end runs of every script; CI on Python 3.11 / 3.12; CPU Docker image |
+
+## How it fits together
+
+```mermaid
+flowchart LR
+    data["data/<br/>EuroSAT, CIFAR-10<br/>leakage-free splits"] --> train["train.py<br/>Hydra + MLflow<br/>checkpoints at epochs 0..30"]
+    train --> ckpt[("checkpoints/")]
+    linalg["linalg/<br/>Lanczos, rSVD, Hutch++,<br/>SLQ, HVPs"] --> spectra & hessian & compress
+    ckpt --> spectra["spectra.py<br/>weight spectra vs MP"]
+    ckpt --> hessian["hessian.py<br/>lambda_max, trace, density"]
+    ckpt --> compress["compress/run.py<br/>SVD / Tucker-2 sweep"]
+    spectra & hessian & compress --> reports[("reports/<br/>json + figures")]
+    reports --> paper["paper/main.tex"]
+```
 
 ## Questions
 
@@ -288,19 +313,40 @@ Running the test suite inside that image (Linux, Python 3.12) gives the same res
 Windows: 111 passed, 97.7% coverage; the container also reproduces the weight-spectra numbers
 above exactly. The image is 2.5 GB, almost all of it PyTorch.
 
-## Planned layout
+## Project layout
 
 ```
 src/spectralens/
-  linalg/     power iteration, Lanczos, randomized SVD, trace estimators, HVPs
-  data/       EuroSAT + CIFAR-10 loaders
-  models/     small CNN, ResNet-18, tiny ViT
-  analysis/   weight spectra, Hessian spectra, rank metrics
-  compress/   SVD / Tucker factorized layers, LoRA
-configs/      Hydra experiment configs
-paper/        LaTeX write-up
-tests/        unit + property-based tests
+  linalg/       power iteration, Lanczos, randomized SVD, Hutchinson / Hutch++, SLQ, HVPs
+  data/         EuroSAT + CIFAR-10 splits, stats, in-memory uint8 cache
+  models/       small CNN, ResNet-18 (3x3 stem), tiny ViT
+  analysis/     layer spectra (stable rank, MP outliers, Hill alpha), Hessian stats
+  compress/     SVD / Tucker-2 layers, MAC counter, compression sweep
+  train.py      training entry point (Hydra compose API, MLflow)
+  spectra.py    weight spectra across checkpoints
+  hessian.py    curvature across checkpoints
+configs/        Hydra configs
+reports/        JSON results and figures used by the README and the paper
+paper/          LaTeX write-up (main.tex, built main.pdf)
+tests/          unit, property-based and CPU end-to-end tests
 ```
+
+## Reproducing everything
+
+On one laptop RTX 5070 Ti; data downloads not included.
+
+```bash
+python -m spectralens data eurosat --download          # also: cifar10
+python -m spectralens.train model=cnn,resnet18,vit data=eurosat,cifar10   # ~35 min total*
+python -m spectralens.spectra                          # ~1 min for all 42 checkpoints
+python -m spectralens.train model=cnn data=eurosat batch_size=32 tag=bs32     # + 128, 512
+python -m spectralens.train model=cnn data=eurosat batch_size=128 sam_rho=0.05 tag=bs128-sam
+python -m spectralens.hessian --name hessian_batch_size --run cnn-eurosat-s0-bs32 ...   # ~43 min
+python -m spectralens.compress.run                     # ~25 min incl. fine-tuning
+tectonic paper/main.tex
+```
+
+\* ResNet-18 on CIFAR-10 is the long one (~17 s per epoch when the GPU isn't shared).
 
 ## Setup
 
